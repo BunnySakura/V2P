@@ -4,6 +4,17 @@ import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 import time
 
+supported_image_formats = (
+    "bmp", "dib",  # Windows bitmaps
+    "jpeg", "jpg", "jpe",  # JPEG files
+    "jp2",  # JPEG 2000 files
+    "png",  # Portable Network Graphics
+    "webp",  # WebP
+    "tiff", "tif",  # TIFF files
+    "hdr", "pic",  # Radiance HDR
+    "ppm", "pgm", "pbm",  # PPM, PBM, and PGM
+)
+
 
 def video_to_images(video_path, output_folder, image_extension, step=1):
     start_time = time.time()
@@ -53,7 +64,8 @@ def select_output_folder():
 def start_conversion():
     video_path_val = video_path.get()
     output_folder_val = output_folder.get()
-    image_extension_val = "jpg" if image_extension.get() != "jpg" else image_extension.get()  # 获取用户输入的图片后缀名
+    # 获取用户输入的图片后缀名，未输入或格式不支持则默认为jpg
+    image_extension_val = "jpg" if image_extension.get() not in supported_image_formats else image_extension.get()
     if not video_path_val or not output_folder_val or not image_extension_val:
         messagebox.showwarning("警告", "请选择一个视频并指定输出文件夹和图片后缀名。")
         return
