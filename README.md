@@ -2,7 +2,7 @@
 
 *视频转图片 | Video to picture*
 
-![img.png](img.png)
+![主界面](doc/img.png "主界面")
 
 ## 打包
 

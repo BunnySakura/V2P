@@ -5,7 +5,7 @@ from tkinter import filedialog, messagebox, ttk
 import time
 
 
-def video_to_images(video_path, output_folder, step=1):
+def video_to_images(video_path, output_folder, image_extension, step=1):
     start_time = time.time()
     video = cv2.VideoCapture(video_path)
     total_frames = int(video.get(cv2.CAP_PROP_FRAME_COUNT))
@@ -26,7 +26,8 @@ def video_to_images(video_path, output_folder, step=1):
 
         if frame_count % step == 0:
             file_serial_number = str(frame_count // step).zfill(total_output_frames)
-            output_file = f"{output_folder}/frame_{file_serial_number}.png"
+            # 使用用户指定的图片后缀名
+            output_file = f"{output_folder}/frame_{file_serial_number}.{image_extension}"
             cv2.imwrite(output_file, frame)
 
         progress['value'] = frame_count
@@ -52,31 +53,36 @@ def select_output_folder():
 def start_conversion():
     video_path_val = video_path.get()
     output_folder_val = output_folder.get()
-    if not video_path_val or not output_folder_val:
-        messagebox.showwarning("警告", "请选择一个视频并指定输出文件夹。")
+    image_extension_val = "jpg" if image_extension.get() != "jpg" else image_extension.get()  # 获取用户输入的图片后缀名
+    if not video_path_val or not output_folder_val or not image_extension_val:
+        messagebox.showwarning("警告", "请选择一个视频并指定输出文件夹和图片后缀名。")
         return
-    video_to_images(video_path_val, output_folder_val)
+    video_to_images(video_path_val, output_folder_val, image_extension_val)  # 传递图片后缀名
 
 
 root = tk.Tk()
-root.title("视频转图片转换器")
+root.title("V2P | 视频转图片")
+
+select_video_button = tk.Button(root, text="选择视频", command=select_video, width=10)
+select_video_button.grid(row=0, column=0, padx=(5, 10), pady=10)
 
 video_path = tk.StringVar()
 video_entry = tk.Entry(root, textvariable=video_path, width=40)
-video_entry.grid(row=0, column=0, padx=(10, 0), pady=10)
+video_entry.grid(row=0, column=1, padx=(10, 0), pady=10)
 
-select_video_button = tk.Button(root, text="选择视频", command=select_video, width=10)
-select_video_button.grid(row=0, column=1, padx=(5, 10), pady=10)
+select_output_button = tk.Button(root, text="输出文件夹", command=select_output_folder, width=10)
+select_output_button.grid(row=1, column=0, padx=(5, 10), pady=10)
 
 output_folder = tk.StringVar()
 output_entry = tk.Entry(root, textvariable=output_folder, width=40)
-output_entry.grid(row=1, column=0, padx=(10, 0), pady=10)
+output_entry.grid(row=1, column=1, padx=(10, 0), pady=10)
 
-select_output_button = tk.Button(root, text="输出文件夹", command=select_output_folder, width=10)
-select_output_button.grid(row=1, column=1, padx=(5, 10), pady=10)
+start_button = tk.Button(root, text="导出", command=start_conversion, width=10)
+start_button.grid(row=2, column=0, padx=(5, 10), pady=10)
 
-start_button = tk.Button(root, text="开始转换", command=start_conversion, width=20)
-start_button.grid(row=2, column=0, columnspan=2, pady=10)
+image_extension = tk.StringVar(value="图片后缀（默认：jpg）")  # 默认值为jpg
+image_extension_entry = tk.Entry(root, textvariable=image_extension, width=40)
+image_extension_entry.grid(row=2, column=1, padx=(10, 0), pady=10, sticky='w')
 
 info_label = tk.Label(root, text="未选择视频")
 info_label.grid(row=3, column=0, columnspan=2, pady=10)
