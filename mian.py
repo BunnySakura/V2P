@@ -1,5 +1,6 @@
 import cv2
 import os
+import base64
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 import time
@@ -14,6 +15,12 @@ supported_image_formats = (
     "hdr", "pic",  # Radiance HDR
     "ppm", "pgm", "pbm",  # PPM, PBM, and PGM
 )
+
+
+def image_to_base64(image_path):
+    with open(image_path, "rb") as image_file:
+        encoded_string = base64.b64encode(image_file.read()).decode("utf-8")
+    return encoded_string
 
 
 def video_to_images(video_path, output_folder, image_extension, step=1):
@@ -74,6 +81,7 @@ def start_conversion():
 
 root = tk.Tk()
 root.title("V2P | 视频转图片")
+root.iconphoto(True, tk.PhotoImage(data=image_to_base64("icon.png")))
 
 select_video_button = tk.Button(root, text="选择视频", command=select_video, width=10)
 select_video_button.grid(row=0, column=0, padx=(5, 10), pady=10)

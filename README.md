@@ -7,5 +7,5 @@
 ## 打包
 
 ```shell
-python -m nuitka --standalone --enable-plugin=tk-inter --onefile main.py
+python -m nuitka --standalone --enable-plugin=tk-inter --onefile --windows-disable-console --windows-icon-from-ico=icon.ico -o V2P mian.py
 ```
